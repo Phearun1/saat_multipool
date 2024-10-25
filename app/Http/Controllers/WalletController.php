@@ -7,6 +7,6 @@ use Illuminate\Http\Request;
 class WalletController extends Controller
 {
     public function wallet(){
-        return view('wallet');
+        return view('pages.wallet.wallet');
     }
 }
