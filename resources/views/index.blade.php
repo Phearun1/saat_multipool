@@ -1,13 +1,12 @@
 @extends('layouts.master')
 @section('title') @lang('translation.Dashboard') @endsection
 @section('content')
-@component('common-components.breadcrumb')
-@slot('pagetitle') Minible @endslot
-@slot('title') Dashboard @endslot
-@endcomponent
 
 <div class="row">
-    <div class="col-md-6 col-xl-4">
+    <p>
+        Dashboard
+    </p>
+    <div class="col-md-6 col-xl-3">
         <div class="card">
             <div class="card-body">
                 <div class="float-end mt-2">
@@ -21,11 +20,11 @@
             </div>
         </div>
     </div> <!-- end col-->
-    <div class="col-md-6 col-xl-4">
+    <div class="col-md-6 col-xl-3">
         <div class="card">
             <div class="card-body">
                 <div class="float-end mt-2">
-                    <i class="mdi mdi-cash-check me-1 text-primary" style="font-size: 32px"></i>
+                    <i class="mdi mdi-cash-check me-1 text-success" style="font-size: 32px"></i>
                 </div>
                 <div>
                     <h4 class="mb-1 mt-1">$<span data-plugin="counterup">34,158</span></h4>
@@ -35,11 +34,36 @@
             </div>
         </div>
     </div> <!-- end col-->
-    <div class="col-md-6 col-xl-4">
+    <div class="col-md-6 col-xl-3">
         <div class="card">
             <div class="card-body">
                 <div class="float-end mt-2">
-                    <i class="uil-water-glass me-1 text-caution" style="font-size: 32px" data-colors="--bs-cyan"></i>
+                    <i class="uil-water-glass me-1 text-warning" style="font-size: 32px"></i>
+                </div>
+                <div>
+                    <div class="d-flex">
+                        <h4 class="mb-1 mt-1">$<span data-plugin="counterup">34,158</span></h4>
+                        <div style="width: 15px">
+
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <p class="mb-0">
+                                <span data-plugin="counterup">100</span>
+                                Machines
+                            </p>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">Total Operating Fund</p>
+                </div>
+                </p>
+            </div>
+        </div>
+    </div> <!-- end col-->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="float-end mt-2">
+                    <i class="uil-water-glass me-1 text-warning" style="font-size: 32px"></i>
                 </div>
                 <div>
                     <div class="d-flex">
@@ -61,6 +85,49 @@
         </div>
     </div> <!-- end col-->
 </div> <!-- end row-->
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-body">
+                <!-- <div class="float-end">
+                    <div class="dropdown">
+                        <a class="dropdown-toggle" href="#" id="dropdownMenuButton3"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="text-muted">Recent<i class="mdi mdi-chevron-down ms-1"></i></span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton3">
+                            <a class="dropdown-item" href="#">Recent</a>
+                            <a class="dropdown-item" href="#">By Users</a>
+                        </div>
+                    </div>
+                </div> -->
+
+                <h4 class="card-title mb-4">Financial Performance</h4>
+
+                <ol class="activity-feed mb-0 ps-2" data-simplebar style="max-height: 339px;">
+                    <div class="feed-item">
+                        <p class="font-size-13 text-primary"><strong>Break-even Point</strong></p>
+                        <p class="mb-0">3.5 Years</p>
+                    </div>
+                    <div class="feed-item">
+                        <p class="font-size-13 text-primary"><strong>Return on Investment</strong></p>
+                        <p class="mb-0">Approximately 66% based on total funds invested</p>
+                    </div>
+                    <div class="feed-item">
+                        <p class="font-size-13 text-primary"><strong>Internal Rate of Return</strong></p>
+                        <p class="mb-0">Estimated 40% or higher, indicating strong profitability</p>
+                    </div>
+                    <div class="feed-item">
+                        <p class="font-size-13 text-primary"><strong>Net Present Value</strong></p>
+                        <p class="mb-0">Positive $259,771.30 at a 10% discount rate</p>
+                    </div>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-xl-12">
