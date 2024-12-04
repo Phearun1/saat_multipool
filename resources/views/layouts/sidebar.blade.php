@@ -40,12 +40,25 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
+
+                <li class="menu-title">Machine</li>
+                
+
                 <li>
-                    <a href="/investment">
-                        <i class="uil-chart-bar"></i>
-                        <span>Investment</span>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-store"></i>
+                        <span>Machine </span>
                     </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="/view_all_machine">View All Machine</a></li>
+                        <li><a href="ecommerce-product-detail">List of Machine Install</a></li>
+                        <li><a href="ecommerce-product-detail">View Machine Location</a></li>
+                        
+                    </ul>
                 </li>
+                
+
+                <li class="menu-title">Wallet</li>
                 <li>
                     <a href="/wallet">
                         <i class="uil-wallet"></i>
@@ -53,6 +66,22 @@
                     </a>
                 </li>
 
+                <li class="menu-title">Portfolio</li>
+                <li>
+                    <a href="/wallet">
+                        <i class="uil-wallet"></i>
+                        <span>Portfolio</span>
+                    </a>
+                </li>
+
+                <li class="menu-title">New Location</li>
+                <li>
+                    <a href="/wallet">
+                        <i class="uil-wallet"></i>
+                        <span>New Location Install Request</span>
+                    </a>
+                </li>
+                <!-- 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uil-window-section"></i>
@@ -309,7 +338,7 @@
                             </ul>
                         </li>
                     </ul>
-                </li>
+                </li> -->
 
             </ul>
         </div>
