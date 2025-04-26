@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runrun to Neath Neath</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 90vh;
+            background-color: #ffcccb; /* Light pink background */
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Cute font */
+        }
+        h1 {
+            color: #ff69b4; /* Hot pink color */
+            text-shadow: 2px 2px #ff1493; /* Darker pink shadow */
+            font-size:50px;
+        }
+        #gif {
+            width: 300px;
+            height: 300px;
+        }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 40px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 10px; /* Rounded corners */
+        }
+        #yes {
+            background-color: #ff69b4; /* Hot pink background */
+            color: white;
+            box-shadow: 2px 2px #ff1493; /* Darker pink shadow */
+        }
+        #no {
+            background-color: #ff69b4; /* Hot pink background */
+            color: white;
+            position: relative;
+            box-shadow: 2px 2px #ff1493; /* Darker pink shadow */
+        }
+        #reset {
+            display: none; /* Initially hidden */
+            margin-top: 140px;
+            background-color: #ff69b4; /* Hot pink background */
+            color: white;
+            box-shadow: 2px 2px #ff1493; /* Darker pink shadow */
+            font-size:15px;
+        }
+        #yay {
+            display: none; /* Initially hidden */
+            color: #ff69b4; /* Hot pink color */
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="main-text">Will you be my Valentine?</h1>
+    <hr>
+    <img id="gif" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHl6ZTVyNjc3NXNvMzBkZGw2Mjd5cGp5cml2bDE3cGhmbGF5emNhZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/LGTyJtNbfXJNJH7AhP/giphy.gif" alt="Funny GIF">
+    <div class="buttons" id="buttons">
+        <button id="yes" onclick="changeGif()">Yes</button>
+        <button id="no" style="margin-left:60px" onmouseover="moveNoButton()">No</button>
+    </div>
+    <button id="reset" onclick="resetGif()">Reset</button>
+    <div id="yay">Yayyyy Muahh!</div>
+
+    <script>
+        function changeGif() {
+            document.getElementById('gif').src = "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWlzdmRmMng1enRzNWVoYnM5b2V4b3VrajI0bWp6OGtjb2J6cmtnNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qCT06WLJURMyfsEi2r/giphy.gif";
+            document.getElementById('buttons').style.display = 'none';
+            document.getElementById('reset').style.display = 'block';
+            document.getElementById('main-text').innerText = 'Yayyyy Muahh!';
+        }
+        
+        function moveNoButton() {
+            let noButton = document.getElementById("no");
+            let x = Math.random() * (window.innerWidth - 100);
+            let y = Math.random() * (window.innerHeight - 100);
+            noButton.style.position = "absolute";
+            noButton.style.left = `${x}px`;
+            noButton.style.top = `${y}px`;
+        }
+
+        function resetGif() {
+            document.getElementById('gif').src = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHl6ZTVyNjc3NXNvMzBkZGw2Mjd5cGp5cml2bDE3cGhmbGF5emNhZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/LGTyJtNbfXJNJH7AhP/giphy.gif";
+            document.getElementById('buttons').style.display = 'flex';
+            document.getElementById('reset').style.display = 'none';
+            document.getElementById('main-text').innerText = 'Will you be my Valentine?';
+        }
+    </script>
+</body>
+</html>

@@ -70,6 +70,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class, // Update this to your Admin model's namespace
+        ],
 
         // 'users' => [
         //     'driver' => 'database',
