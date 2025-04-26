@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="row">
-    <p style="font-size:x-large; font-weight:bold">Dashboard</p>
+    <p style="font-size:x-large; font-weight:bold">{{ __('messages.dashboard') }}</p>
 
     <!-- Total Pool Fund Card -->
     <div class="col-md-6 col-xl-4 mb-3">
@@ -13,8 +13,8 @@
                     <i class="uil-money-bill me-1 text-success" style="font-size: 32px"></i>
                 </div>
                 <div>
-                    <h4 class="mb-1 mt-1">$<span data-plugin="counterup">34,158</span></h4>
-                    <p class="text-muted mb-0">Total Pool Fund</p>
+                    <h4 class="mb-1 mt-1">$<span>{{ number_format($poolfunds->total_pool_fund, 2) }}</span></h4>
+                    <p class="text-muted mb-0">{{ __('messages.total_pool_fund') }}</p>
                 </div>
             </div>
         </div>
@@ -28,14 +28,14 @@
                     <i class="mdi mdi-cash-check me-1 text-success" style="font-size: 32px"></i>
                 </div>
                 <div>
-                    <h4 class="mb-1 mt-1">$<span data-plugin="counterup">34,158</span></h4>
-                    <p class="text-muted mb-0">Tool Available Fund</p>
+                    <h4 class="mb-1 mt-1">$<span>{{ number_format($poolfunds->available_fund, 2) }}</span></h4>
+                    <p class="text-muted mb-0">{{ __('messages.total_available_fund') }}</p>
                 </div>
             </div>
         </div>
     </div> <!-- end col -->
 
-    <!-- Total Water Sale Card -->
+    <!-- Total Operating Fund Card -->
     <div class="col-md-6 col-xl-4 mb-3">
         <div class="card shadow-lg border-0 rounded-3">
             <div class="card-body">
@@ -43,25 +43,26 @@
                     <i class="uil-wallet me-1 text-success" style="font-size: 32px"></i>
                 </div>
                 <div>
-                    <h4 class="mb-1 mt-1">$<span data-plugin="counterup">34,158</span></h4>
-                    <p class="text-muted mb-0">Total Operating Fund</p>
+                    <h4 class="mb-1 mt-1">$<span>{{ number_format($poolfunds->operating_fund, 2) }}</span></h4>
+                    <p class="text-muted mb-0">{{ __('messages.total_operating_fund') }} </p>
                 </div>
             </div>
         </div>
     </div> <!-- end col -->
+
 
     <!-- Combined Card for Total Machines Asset, Water Sale, and Bottle Sale -->
     <div class="row">
         <div class="col-md-6 col-xl-4 mb-3">
             <div class="card shadow-sm border-0" style="height:430px">
                 <div class="card-body">
-                    <h4 class="card-title mb-4" style="font-size: 1.2rem;">Machine Overview</h4>
+                    <h4 class="card-title mb-4" style="font-size: 1.2rem;">{{ __('messages.machine_overview') }}</h4>
 
                     <!-- Total Machines Asset -->
                     <div class="d-flex justify-content-between mb-3">
                         <div>
-                            <h4 class="mb-2 mt-4">$<span data-plugin="counterup">12,345</span></h4>
-                            <p class="text-muted mb-0">Total Machines Asset</p>
+                            <h4 class="mb-2 mt-4">$<span data-plugin="counterup">{{ number_format($machineStats->total_machine_asset, 2) }}</span></h4>
+                            <p class="text-muted mb-0">{{ __('messages.total_machine_asset') }}</p>
                         </div>
                         <div class="text-warning">
                             <i class="uil-cog" style="font-size: 40px;"></i>
@@ -71,8 +72,8 @@
                     <!-- Total Water Sale -->
                     <div class="d-flex justify-content-between mb-3">
                         <div>
-                            <h4 class="mb-2 mt-4">$<span data-plugin="counterup">12,345</span></h4>
-                            <p class="text-muted mb-0">Total Water Sale</p>
+                            <h4 class="mb-2 mt-4">$<span data-plugin="counterup">{{ number_format($machineStats->total_water_sale, 2) }}</span></h4>
+                            <p class="text-muted mb-0">{{ __('messages.total_water_sales') }}</p>
                         </div>
                         <div class="text-primary">
                             <i class="uil-water-glass" style="font-size: 40px;"></i>
@@ -82,14 +83,13 @@
                     <!-- Total Bottle Sale -->
                     <div class="d-flex justify-content-between mb-3">
                         <div>
-                            <h4 class="mb-2 mt-4">$<span data-plugin="counterup">12,345</span></h4>
-                            <p class="text-muted mb-0">Total Bottle Sale</p>
+                            <h4 class="mb-2 mt-4">{{ number_format($machineStats->total_bottle_sale) }}</h4>
+                            <p class="text-muted mb-0">{{ __('messages.total_bottle_sales') }}</p>
                         </div>
                         <div class="text-primary">
                             <i class="fas fa-wine-bottle" style="font-size: 40px;"></i>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div> <!-- end col -->
@@ -98,7 +98,7 @@
         <div class="col-md-12 col-xl-8 mb-3">
             <div class="card shadow-lg border-0 rounded-3">
                 <div class="card-body">
-                    <h4 class="card-title mb-4" style="font-size: 1.2rem;">Key Financial Metric</h4>
+                    <h4 class="card-title mb-4" style="font-size: 1.2rem;">{{ __('messages.key_financial_metrics') }}</h4>
                     <ol class="activity-feed mb-0 ps-2" data-simplebar style="max-height: 340px;">
                         <div class="feed-item">
                             <p class="font-size-16 text-primary"><strong>Break-even Point</strong></p>
@@ -128,7 +128,7 @@
             <div class="card shadow-lg border-0 rounded-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
-                        <h4 class="card-title" style="font-size:1.2rem;">List Daily Distribution</h4>
+                        <h4 class="card-title" style="font-size:1.2rem;">{{ __('messages.list_daily_distribution') }}</h4>
                     </div>
 
                     <div class="table-responsive" data-simplebar style="max-height: 320px;">
@@ -203,7 +203,7 @@
             <div class="card shadow-lg border-0 rounded-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
-                        <h4 class="card-title" style="font-size:1.2rem;">List Maintenance Activity</h4>
+                        <h4 class="card-title" style="font-size:1.2rem;">{{ __('messages.list_maintenance_activity') }}</h4>
                         <!-- Date Section (Top Right) -->
                         <div class="d-flex align-items-center text-end">
                             <h5 class="text-muted mb-0 me-2">Date:</h5>
@@ -270,74 +270,56 @@
         </div> <!-- end col -->
         <!-- Existing Content Below -->
         <div class="row">
-            <div class="col-xl-12">
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="float-end">
-                            <div class="dropdown">
-                                <a class="dropdown-toggle text-reset" href="#" id="dropdownMenuButton5" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="fw-semibold">Sort By:</span> <span class="text-muted">Yearly<i class="mdi mdi-chevron-down ms-1"></i></span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton5">
-                                    <a class="dropdown-item" href="#">Monthly</a>
-                                    <a class="dropdown-item" href="#">Yearly</a>
-                                    <a class="dropdown-item" href="#">Weekly</a>
-                                </div>
-                            </div>
-                        </div>
-                        <h4 class="card-title mb-4">Graph Daily Average sale per Machine</h4>
-                        <div class="mt-1">
-                            <ul class="list-inline main-chart mb-0">
-                                <li class="list-inline-item chart-border-left me-0 border-0">
-                                    <h3 class="text-primary">$<span data-plugin="counterup">2,371</span><span class="text-muted d-inline-block font-size-15 ms-3">Total Pool Fund</span></h3>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="mt-3">
-                            <div id="sales-analytics-chart" data-colors='["--bs-primary", "#dfe2e6", "--bs-warning"]' class="apex-charts" dir="ltr"></div>
-                        </div>
-                    </div> <!-- end card-body-->
-                </div> <!-- end card-->
-            </div> <!-- end col-->
-        </div> <!-- end row-->
+                        <h1 class="card-title mb-4" style="font-size: 1.2rem;">{{ __('messages.graph_average_monthly_sale') }}</h1>
+
+                        <!-- Dropdown to change group type -->
+                        <form method="GET" class="mb-4">
+                            <label for="group_type" class="form-label">Group By:</label>
+                            <select name="group_type" id="group_type" class="form-select" onchange="this.form.submit()">
+                                <option value="weekly" {{ $groupType == 'weekly' ? 'selected' : '' }}>Weekly</option>
+                                <option value="monthly" {{ $groupType == 'monthly' ? 'selected' : '' }}>Monthly</option>
+                                <option value="yearly" {{ $groupType == 'yearly' ? 'selected' : '' }}>Yearly</option>
+                            </select>
+                        </form>
+
+                        <!-- Line Graph -->
+                        <div id="average-sales-chart" class="apex-charts"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">Latest Transaction Water Sale</h4>
+                        <h4 class="card-title mb-4" style="font-size: 1.2rem;">{{ __('messages.latest_transaction_water_sale') }}</h4>
                         <div class="table-responsive">
                             <table class="table table-centered table-nowrap mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th style="width: 20px;">
-                                            <div class="form-check font-size-16">
-                                                <input type="checkbox" class="form-check-input" id="customCheck1">
-                                                <label class="form-check-label" for="customCheck1">&nbsp;</label>
-                                            </div>
-                                        </th>
+                                        
                                         <th>ID</th>
                                         <th>Billing Name</th>
                                         <th>Date</th>
                                         <th>Total</th>
                                         <th>Payment Status</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>
-                                            <div class="form-check font-size-16">
-                                                <input type="checkbox" class="form-check-input" id="customCheck2">
-                                                <label class="form-check-label" for="customCheck2">&nbsp;</label>
-                                            </div>
-                                        </td>
+                                        
                                         <td><a href="javascript: void(0);" class="text-body fw-bold">#MB2540</a> </td>
                                         <td>Neal Matthews</td>
                                         <td>07 Oct, 2019</td>
                                         <td>$400</td>
-                                        <td><span   class="badge rounded-pill bg-success-subtle text-success font-size-13">Paid</span></td>
-                                        
+                                        <td><span class="badge rounded-pill bg-success-subtle text-success font-size-13">Paid</span></td>
+
                                     </tr>
                                     <!-- Add more rows as needed -->
                                 </tbody>
@@ -356,4 +338,59 @@
         <!-- apexcharts -->
         <script src="{{ URL::asset('/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
         <script src="{{ URL::asset('/assets/js/pages/dashboard.init.js') }}"></script>
+        <script src="{{ URL::asset('/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var options = {
+                    series: [{
+                        name: 'Average Sale',
+                        data: @json($salesData->pluck('average')) // Extract average values
+                    }],
+                    chart: {
+                        type: 'line',
+                        height: 350,
+                        toolbar: {
+                            show: false // Remove toolbar
+                        }
+                    },
+                    stroke: {
+                        width: 3,
+                        curve: 'smooth'
+                    },
+                    markers: {
+                        size: 4
+                    },
+                    colors: ['#ffc107'], // Yellow line color
+                    xaxis: {
+                        categories: @json($salesData->pluck('label')), // Extract group labels
+                        title: {
+                            text: 'Time Period'
+                        }
+                    },
+                    yaxis: {
+                        title: {
+                            text: 'Average Sale Amount'
+                        },
+                        labels: {
+                            formatter: function(val) {
+                                return "$" + val.toFixed(2);
+                            }
+                        }
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: function(val) {
+                                return "$" + val.toFixed(2);
+                            }
+                        }
+                    }
+                };
+
+                // Render the chart
+                var chart = new ApexCharts(document.querySelector("#average-sales-chart"), options);
+                chart.render();
+            });
+        </script>
+
         @endsection

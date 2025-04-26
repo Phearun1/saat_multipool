@@ -4,6 +4,7 @@
 <head>
     @include('layouts.title-meta')
     @include('layouts.head')
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet"> <!-- Include custom CSS -->
 </head>
 
 @section('body')
