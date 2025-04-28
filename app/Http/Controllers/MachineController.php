@@ -42,10 +42,17 @@ class MachineController extends Controller
             ->orderBy('sale_date_time', 'desc')
             ->get();
 
-        // Fetch users for assigning profit distribution (including phone_number)
+        // Fetch users for assigning profit distribution (including phone_number and comment)
         $users = DB::table('users')
             ->join('operationalpartnerassignments', 'users.user_id', '=', 'operationalpartnerassignments.user_id')
-            ->select('users.user_id', 'users.full_name', 'users.phone_number', 'operationalpartnerassignments.role', 'operationalpartnerassignments.percentage')
+            ->select(
+                'users.user_id', 
+                'users.full_name', 
+                'users.phone_number', 
+                'operationalpartnerassignments.role', 
+                'operationalpartnerassignments.percentage',
+                'operationalpartnerassignments.comment'
+            )
             ->where('operationalpartnerassignments.machine_id', $machine_id)
             ->get();
 

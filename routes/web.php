@@ -58,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/wallet/deposit', [AbaPayController::class, 'deposit'])->name('wallet.deposit')->middleware('auth');
         
-        Route::get('/test/send-webhook', [WebhookSenderController::class, 'sendTestWebhook']);
+
         Route::get('/wallet/balance', [WalletController::class, 'getBalance'])->name('wallet.getBalance');
 
 
@@ -85,7 +85,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/machines/add', [MachineController::class, 'add_machine'])->name('machines.add');
         Route::post('/admin/assign_profit', [AdminController::class, 'assignProfit'])->name('admin.assignProfit');
         Route::post('/admin/add_user_profit', [AdminController::class, 'addUserProfit'])->name('admin.addUserProfit');
-        Route::get('/admin/search_users', [AdminController::class, 'searchUsers'])->name('admin.searchUsers');
+        Route::get('/admin/search-users', [AdminController::class, 'searchUsers'])->name('admin.searchUsers');
+
+
         Route::delete('/admin/delete_user_profit/{user_id}/{machine_id}', [AdminController::class, 'deleteUserProfit'])->name('admin.deleteUserProfit');
 
         // Admin routes for location requests
