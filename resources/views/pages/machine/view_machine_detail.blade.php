@@ -35,17 +35,39 @@
                             @endif
                         </div>
                         <h5 class="uil uil-bill me-1 mt-2 pt-2 text-muted">/Litre: 500 Riel</h5>
-                        <div class="mt-3">
-                            <h5 class="font-size-14">Total Plastic Saved:</h5>
-                            <p>{{ $machine->bottles_saved_count }}</p>
-                        </div>
-                        <div class="mt-3">
-                            <h5 class="font-size-14">Average Sale Per Day:</h5>
-                            <p>${{ number_format($machine->total_revenue / 30, 2) }}</p>
-                        </div>
-                        <div class="mt-3">
-                            <h5 class="font-size-14">Address:</h5>
-                            <p>{{ $machine->location }}</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mt-3">
+                                    <h5 class="font-size-14">Total Plastic Saved:</h5>
+                                    <p>{{ $machine->bottles_saved_count }}</p>
+                                </div>
+                                <div class="mt-3">
+                                    <h5 class="font-size-14">Average Sale Per Day:</h5>
+                                    <p>${{ number_format($machine->total_revenue / 30, 2) }}</p>
+                                </div>
+                                <div class="mt-3">
+                                    <h5 class="font-size-14">Address:</h5>
+                                    <p>{{ $machine->location }}</p>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-6">
+                            <div class="mt-3">
+                                    <h5 class="font-size-14">Profit Share Investors:</h5>
+                                    <p>{{ $machine->profit_share_investors }}%</p>
+                                </div>
+                                <div class="mt-3">
+                                    <h5 class="font-size-14">Profit Share Space Owner:</h5>
+                                    <p>{{ $machine->profit_share_operators }}%</p>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <h5 class="font-size-14">Machine Status:</h5>
+                                    <p class="badge bg-{{ $machine->status ? 'success' : 'danger' }}">
+                                        {{ $machine->status ? 'Active' : 'Inactive' }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,7 +130,29 @@
                     <div class="mb-3">
                         <label class="form-label">Search User (Full Name / Phone Number)</label>
                         <input type="text" id="userSearch" class="form-control" placeholder="Enter name or phone number">
-                        <div id="userList" class="mt-2 border p-2 bg-gray" style="display: none; max-height: 200px; overflow-y: auto;"></div>
+                        <div id="userList" class="mt-2 border p-2 bg-white" style="display: none; max-height: 200px; overflow-y: auto; color:black"></div>
+                    </div>
+
+                    <!-- Total percentage indicator -->
+                    <div class="mt-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Allocation</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-1 me-3">
+                                        <div class="progress" style="height: 20px;">
+                                            <div id="percentageBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span id="totalPercentageValue" class="badge rounded-pill bg-primary fs-6">0%</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-muted small" id="percentageMessage">
+                                    Total percentage allocation must not exceed 100%.
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Profit Distribution Table -->
@@ -119,8 +163,10 @@
                                     <th>User ID</th>
                                     <th>Full Name</th>
                                     <th>Role</th>
+                                    <th>Note</th>
                                     <th>Current %</th>
                                     <th>New %</th>
+                                    
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -130,18 +176,24 @@
                                     <td>{{ $user->user_id }}</td>
                                     <td>{{ $user->full_name }}</td>
                                     <td>{{ $user->role }}</td>
+                                    <td>
+                                        <input type="text" class="form-control comment-input" name="comments[{{ $user->user_id }}]" value="{{ $user->comment ?? '' }}" placeholder="Add a note">
+                                    </td>
                                     <td>{{ $user->percentage }}%</td>
                                     <td>
-                                        <input type="number" class="form-control profit-input" name="percentages[{{ $user->user_id }}]" value="{{ $user->percentage }}" min="0" max="100" required>
+                                        <input type="number" class="form-control profit-input" name="percentages[{{ $user->user_id }}]" value="{{ $user->percentage }}" min="0" max="100" step="0.01" required>
                                     </td>
+                                    
                                     <td>
-                                        <button type="button" class="btn btn-danger btn-sm remove-user" data-user-id="{{ $user->user_id }}">Delete</button>
+                                        <button type="button" class="btn btn-danger btn-sm remove-user" data-user-id="{{ $user->user_id }}">
+                                            <i class="mdi mdi-delete"></i> Delete
+                                        </button>
                                     </td>
                                 </tr>
                                 @endforeach
                                 @if($users->isEmpty())
                                 <tr>
-                                    <td colspan="6" class="text-center">No users found.</td>
+                                    <td colspan="7" class="text-center">No users found.</td>
                                 </tr>
                                 @endif
                             </tbody>
@@ -175,7 +227,16 @@
                     data.users.forEach(user => {
                         let userItem = document.createElement('div');
                         userItem.classList.add('p-2', 'border-bottom');
-                        userItem.innerHTML = `<strong>${user.full_name}</strong> (${user.phone_number})`;
+                        
+                        // Map user_type to role name
+                        let roleName = 
+                            user.user_type === 1 ? 'Investor' : 
+                            user.user_type === 2 ? 'Space Owner' :
+                            user.user_type === 3 ? 'Money Collector' :
+                            user.user_type === 4 ? 'Maintenance' :
+                            user.user_type === 5 ? 'Admin' : 'Unknown';
+                        
+                        userItem.innerHTML = `<strong>${user.full_name}</strong> (${user.phone_number}) - <span class="badge bg-info">${roleName}</span>`;
                         userItem.style.cursor = 'pointer';
                         userItem.onclick = function() {
                             addUserToTable(user.user_id, user.full_name, user.user_type);
@@ -191,23 +252,63 @@
 
     function addUserToTable(userId, fullName, role) {
         let userTable = document.getElementById('userTable');
+        
+        // Remove "No users found" row if it exists
+        let noUserRow = userTable.querySelector('tr td[colspan="7"]');
+        if (noUserRow) {
+            noUserRow.closest('tr').remove();
+        }
+        
+        // Check if user already exists
         let existingRow = document.getElementById(`userRow_${userId}`);
         if (existingRow) {
             alert('User is already added!');
             return;
         }
 
-        let row = `<tr id="userRow_${userId}">
+        // Map role ID to role name
+        const roleName = 
+            role === 1 ? 'Investor' : 
+            role === 2 ? 'Space Owner' : 
+            role === 3 ? 'Money Collector' : 
+            role === 4 ? 'Maintenance' : 
+            role === 5 ? 'Admin' : 'Unknown';
+        
+        // Create new row with comment field
+        let newRow = document.createElement('tr');
+        newRow.id = `userRow_${userId}`;
+        newRow.innerHTML = `
             <td>${userId}</td>
             <td>${fullName}</td>
-            <td>${role}</td>
+            <td>${roleName}</td>
+            <td>
+                <input type="text" class="form-control comment-input" 
+                       name="comments[${userId}]" 
+                       placeholder="Add a note">
+            </td>
+            
+            <td>
+                <input type="number" class="form-control profit-input" 
+                       name="percentages[${userId}]" 
+                       min="0" max="100" value="0" step="0.01" required>
+            </td>
             <td>0%</td>
-            <td><input type="number" class="form-control profit-input" name="percentages[${userId}]" min="0" max="100" value="0" required></td>
-            <td><button type="button" class="btn btn-danger btn-sm remove-user" data-user-id="${userId}">Delete</button></td>
-        </tr>`;
+            <td>
+                <button type="button" class="btn btn-danger btn-sm remove-user" data-user-id="${userId}">
+                    <i class="mdi mdi-delete"></i> Delete
+                </button>
+            </td>
+        `;
 
-        userTable.innerHTML += row;
+        // Add the new row to the table
+        userTable.appendChild(newRow);
+        
+        // Add event listeners
+        newRow.querySelector('.profit-input').addEventListener('input', updateTotalPercentage);
+        
+        // Update remove button event listeners
         attachRemoveEventListeners();
+        updateTotalPercentage();
     }
 
     function attachRemoveEventListeners() {
@@ -232,6 +333,7 @@
         .then(data => {
             if (data.success) {
                 document.getElementById(`userRow_${userId}`).remove();
+                updateTotalPercentage();
             } else {
                 alert(data.message);
             }
@@ -260,6 +362,35 @@
             alert("An error occurred while assigning profit.");
         });
     });
+
+    document.querySelectorAll('.profit-input').forEach(input => {
+        input.addEventListener('input', updateTotalPercentage);
+    });
+
+    function updateTotalPercentage() {
+        let totalPercentage = 0;
+        document.querySelectorAll('.profit-input').forEach(input => {
+            let value = parseFloat(input.value) || 0;
+            totalPercentage += value;
+        });
+
+        let percentageBar = document.getElementById('percentageBar');
+        let totalPercentageValue = document.getElementById('totalPercentageValue');
+        let percentageMessage = document.getElementById('percentageMessage');
+
+        percentageBar.style.width = `${totalPercentage}%`;
+        percentageBar.setAttribute('aria-valuenow', totalPercentage);
+        percentageBar.textContent = `${totalPercentage}%`;
+        totalPercentageValue.textContent = `${totalPercentage}%`;
+
+        if (totalPercentage > 100) {
+            percentageMessage.textContent = "Total percentage allocation exceeds 100%!";
+            percentageMessage.classList.add('text-danger');
+        } else {
+            percentageMessage.textContent = "Total percentage allocation must not exceed 100%.";
+            percentageMessage.classList.remove('text-danger');
+        }
+    }
 </script>
 
 @endsection

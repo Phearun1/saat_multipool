@@ -159,5 +159,7 @@ return [
     'profit_share_for_investors'=> 'Profit Share for Investors',
     'profit_share_for_operators'=> 'Profit Share for Operators',
     'machine_image'=> 'Machine Image',
+    'password'=> 'Password',
+    'phone_number'=> 'Phone Number',
     
 ];

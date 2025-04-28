@@ -191,7 +191,7 @@ class AdminController extends Controller
         return view('pages.admin.view_operational_partner_account', compact('operationalpartneraccount'));
     }
 
-    
+
     public function viewOperationalPartnerAccountDetail($id)
     {
         $operationalpartneraccount = DB::table('operationalpartneraccounts')
@@ -235,80 +235,116 @@ class AdminController extends Controller
         return view('pages.admin.view_all_profit_distribution', compact('profitDistribution'));
     }
 
-        // Assign Profit to Users
-        public function assignProfit(Request $request)
-        {
-            $request->validate([
-                'machine_id' => 'required|integer',
-                'percentages' => 'required|array',
-                'percentages.*' => 'required|integer|min:0|max:100',
-            ]);
-    
-            try {
-                foreach ($request->percentages as $user_id => $percentage) {
-                    DB::table('operationalpartnerassignments')->updateOrInsert(
-                        ['user_id' => $user_id, 'machine_id' => $request->machine_id],
-                        ['percentage' => $percentage]
-                    );
-                }
-    
-                return response()->json(['success' => true, 'message' => 'Profit distribution assigned successfully.']);
-            } catch (\Exception $e) {
-                return response()->json(['success' => false, 'message' => 'Error assigning profit: ' . $e->getMessage()]);
-            }
+    // Assign Profit to Users
+    public function assignProfit(Request $request)
+    {
+        $request->validate([
+            'machine_id' => 'required|integer|exists:machines,machine_id',
+            'percentages' => 'required|array',
+            'percentages.*' => 'required|numeric|min:0|max:100',
+            'comments' => 'array',
+            'comments.*' => 'nullable|string|max:255',
+        ]);
+
+        $totalPercentage = array_sum($request->percentages);
+
+        if ($totalPercentage > 100) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Total assigned percentage cannot exceed 100%.'
+            ], 422);
         }
-    
-        // Add User to Machine
-        public function addUserProfit(Request $request)
-        {
-            $request->validate([
-                'user_id' => 'required|exists:users,user_id',
-                'machine_id' => 'required|exists:machines,machine_id',
-            ]);
-    
-            try {
+
+        try {
+            // Process each user assignment
+            foreach ($request->percentages as $user_id => $percentage) {
+                // Get comment for this user if available
+                $comment = isset($request->comments[$user_id]) ? $request->comments[$user_id] : null;
+                
+                // Update or insert assignment with comment
                 DB::table('operationalpartnerassignments')->updateOrInsert(
-                    ['user_id' => $request->user_id, 'machine_id' => $request->machine_id],
-                    ['percentage' => 0] // Default profit percentage
+                    ['user_id' => $user_id, 'machine_id' => $request->machine_id],
+                    [
+                        'percentage' => $percentage,
+                        'comment' => $comment,
+                    ]
                 );
-    
-                return response()->json(['success' => true, 'message' => 'User linked to machine successfully.']);
-            } catch (\Exception $e) {
-                return response()->json(['success' => false, 'message' => 'Error linking user: ' . $e->getMessage()]);
             }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profit distribution and comments assigned successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error assigning profit: ' . $e->getMessage()
+            ], 500);
         }
-    
-        // Search Users by Full Name or Phone Number
-        public function searchUsers(Request $request)
-        {
-            $query = $request->input('query');
-    
-            $users = DB::table('users')
-                ->where('full_name', 'like', "%$query%")
-                ->orWhere('phone_number', 'like', "%$query%")
-                ->select('user_id', 'full_name', 'phone_number', 'user_type')
-                ->limit(10)
-                ->get();
-    
-            return response()->json(['users' => $users]);
+    }
+
+    // Add User to Machine
+    public function addUserProfit(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,user_id',
+            'machine_id' => 'required|exists:machines,machine_id',
+        ]);
+
+        try {
+            DB::table('operationalpartnerassignments')->updateOrInsert(
+                ['user_id' => $request->user_id, 'machine_id' => $request->machine_id],
+                ['percentage' => 0] // Default profit percentage
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User linked to machine successfully with 0% assigned.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error linking user: ' . $e->getMessage()
+            ], 500);
         }
-    
-        // Remove User from Machine Assignment
-        public function deleteUserProfit($user_id, $machine_id)
-        {
-            try {
-                DB::table('operationalpartnerassignments')
-                    ->where('user_id', $user_id)
-                    ->where('machine_id', $machine_id)
-                    ->delete();
-    
-                return response()->json(['success' => true, 'message' => 'User removed from machine successfully.']);
-            } catch (\Exception $e) {
-                return response()->json(['success' => false, 'message' => 'Error removing user: ' . $e->getMessage()]);
-            }
+    }
+
+
+
+
+    // Search Users by Full Name or Phone Number
+    public function searchUsers(Request $request)
+    {
+        $query = $request->input('query');
+
+        $users = DB::table('users')
+            ->where(function ($q) use ($query) {
+                $q->where('full_name', 'like', "%{$query}%")
+                    ->orWhere('phone_number', 'like', "%{$query}%");
+            })
+            ->select('user_id', 'full_name', 'phone_number', 'user_type')
+            ->limit(10)
+            ->get();
+
+        return response()->json(['users' => $users]);
+    }
+
+    // Remove User from Machine Assignment
+    public function deleteUserProfit($user_id, $machine_id)
+    {
+        try {
+            DB::table('operationalpartnerassignments')
+                ->where('user_id', $user_id)
+                ->where('machine_id', $machine_id)
+                ->delete();
+
+            return response()->json(['success' => true, 'message' => 'User removed from machine successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error removing user: ' . $e->getMessage()]);
         }
-    
-    
+    }
+
+
 
 
     public function viewNewLocationRequests()
