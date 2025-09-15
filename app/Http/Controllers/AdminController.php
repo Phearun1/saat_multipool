@@ -235,6 +235,78 @@ class AdminController extends Controller
         return view('pages.admin.view_all_profit_distribution', compact('profitDistribution'));
     }
 
+    // // Updated Assign Profit Function
+    // public function assignProfit(Request $request)
+    // {
+    //     $request->validate([
+    //         'machine_id' => 'required|integer|exists:machines,machine_id',
+    //         'percentages' => 'required|array',
+    //         'percentages.*' => 'required|numeric|min:0|max:100',
+    //         'comments' => 'array',
+    //         'comments.*' => 'nullable|string|max:255',
+    //     ]);
+
+    //     // Get the machine's profit_share_operators value
+    //     $machine = DB::table('machines')
+    //         ->select('profit_share_operators')
+    //         ->where('machine_id', $request->machine_id)
+    //         ->first();
+
+    //     if (!$machine) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Machine not found.'
+    //         ], 404);
+    //     }
+
+    //     // The frontend shows percentages as if 100% is the total
+    //     // But we need to validate against the actual operator share
+    //     $operatorSharePercentage = $machine->profit_share_operators;
+    //     $totalPercentage = array_sum($request->percentages);
+
+    //     // Check if total percentage exceeds 100% (frontend validation)
+    //     if ($totalPercentage > 100) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => "Total assigned percentage ({$totalPercentage}%) cannot exceed 100%."
+    //         ], 422);
+    //     }
+
+    //     try {
+    //         // Process each user assignment
+    //         foreach ($request->percentages as $user_id => $percentage) {
+    //             // Calculate the actual percentage based on operator share
+    //             // If user assigns 50% on frontend, and operator share is 60%,
+    //             // actual percentage = (50/100) * 60 = 30% of total machine profit
+    //             $actualPercentage = ($percentage / 100) * $operatorSharePercentage;
+
+    //             // Get comment for this user if available
+    //             $comment = isset($request->comments[$user_id]) ? $request->comments[$user_id] : null;
+
+    //             // Update or insert assignment with the calculated actual percentage
+    //             DB::table('operationalpartnerassignments')->updateOrInsert(
+    //                 ['user_id' => $user_id, 'machine_id' => $request->machine_id],
+    //                 [
+    //                     'percentage' => $actualPercentage, // Store actual percentage of total profit
+    //                     'comment' => $comment,
+    //                 ]
+    //             );
+    //         }
+
+    //         $totalActualPercentage = ($totalPercentage / 100) * $operatorSharePercentage;
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => "Profit distribution assigned successfully. Allocated: {$totalPercentage}% of operator share ({$totalActualPercentage}% of total machine profit)."
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Error assigning profit: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
     // Assign Profit to Users
     public function assignProfit(Request $request)
     {

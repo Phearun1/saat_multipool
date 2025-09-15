@@ -2,13 +2,13 @@
 @extends('layouts.master')
 
 @section('title')
-@lang('translation.Product_Detail')
+@lang('translation.Machine_Detail')
 @endsection
 
 @section('content')
 @component('common-components.breadcrumb')
 @slot('pagetitle') Ecommerce @endslot
-@slot('title') Product Detail @endslot
+@slot('title') Machine Detail @endslot
 @endcomponent
 
 <div class="row">
@@ -20,19 +20,39 @@
                         <div class="product-detail">
                             <div class="tab-content position-relative">
                                 <div class="product-img">
-                                    <img src="{{ URL::asset('assets/images/saat_pool.png') }}" alt="" class="img-fluid mx-auto d-block">
+                                    @if(isset($machine->image) && !empty($machine->image))
+                                    <img src="{{ asset('storage/' . $machine->image) }}" alt="Machine Image" class="img-fluid mx-auto d-block">
+                                    @else
+                                    <img src="{{ URL::asset('assets/images/saat_pool.png') }}" alt="Default Machine Image" class="img-fluid mx-auto d-block">
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-8">
-                        <div class="mt-4 mt-xl-3 d-flex justify-content-between align-items-center">
-                            <h4 class="font-size-20 mb-3">Machine ID: {{ $machine->machine_id }}</h4>
-                            @if(Auth::user() && Auth::user()->user_type == 5)
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignProfitModal">
-                                Profit Percentage
-                            </button>
-                            @endif
+                        <div class="mt-4 mt-xl-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h4 class="mb-1">Machine ID: <span class="text-primary">{{ $machine->machine_id }}</span></h4>
+
+                                    @if(isset($machine->pool_id) && $machine->pool_id)
+                                    <h6 class="text-muted">Pool ID: <span class="text-info">{{ $machine->pool_id }}</span></h6>
+                                    @else
+                                    <h6 class="text-muted">Not assigned to a pool</h6>
+                                    @endif
+                                </div>
+
+                                @if(Auth::user() && Auth::user()->user_type == 5)
+                                <div>
+                                    <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editMachineModal">
+                                        <i class="bx bx-edit me-1"></i> Edit Machine
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#assignProfitModal">
+                                        <i class="bx bx-pie-chart-alt me-1"></i> Profit Percentage
+                                    </button>
+                                </div>
+                                @endif
+                            </div>
                         </div>
                         <h5 class="uil uil-bill me-1 mt-2 pt-2 text-muted">/Litre: 500 Riel</h5>
                         <div class="row">
@@ -49,10 +69,10 @@
                                     <h5 class="font-size-14">Address:</h5>
                                     <p>{{ $machine->location }}</p>
                                 </div>
-                                
+
                             </div>
                             <div class="col-md-6">
-                            <div class="mt-3">
+                                <div class="mt-3">
                                     <h5 class="font-size-14">Profit Share Investors:</h5>
                                     <p>{{ $machine->profit_share_investors }}%</p>
                                 </div>
@@ -60,7 +80,7 @@
                                     <h5 class="font-size-14">Profit Share Space Owner:</h5>
                                     <p>{{ $machine->profit_share_operators }}%</p>
                                 </div>
-                                
+
                                 <div class="mt-3">
                                     <h5 class="font-size-14">Machine Status:</h5>
                                     <p class="badge bg-{{ $machine->status ? 'success' : 'danger' }}">
@@ -111,6 +131,123 @@
         </div>
     </div>
 </div>
+
+
+
+<!-- Edit Machine Modal -->
+@if(Auth::user() && Auth::user()->user_type == 5)
+<div class="modal fade" id="editMachineModal" tabindex="-1" aria-labelledby="editMachineModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMachineModalLabel">Edit Machine</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('machines.update', $machine->machine_id) }}" method="POST" enctype="multipart/form-data" id="editMachineForm">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="pool_id" class="form-label">Investment Pool</label>
+                                <select class="form-select" id="pool_id" name="pool_id">
+                                    <option value="">-- Select Pool (Optional) --</option>
+                                    @foreach($pools ?? [] as $pool)
+                                    <option value="{{ $pool->pool_id }}" {{ $machine->pool_id == $pool->pool_id ? 'selected' : '' }}>
+                                        {{ $pool->pool_name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="location" class="form-label">Location</label>
+                                <input type="text" class="form-control" name="location" value="{{ $machine->location }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="installation_date" class="form-label">Installation Date</label>
+                                <input type="date" class="form-control" name="installation_date" value="{{ $machine->installation_date }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="profit_share_investors" class="form-label">
+                                    Profit Share Investors (%)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="edit_profit_share_investors"
+                                    name="profit_share_investors" value="{{ $machine->profit_share_investors }}"
+                                    min="0" max="100" step="0.01" required>
+                                <div class="invalid-feedback" id="edit_investors_error"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="profit_share_operators" class="form-label">
+                                    Profit Share Space Owner (%)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="edit_profit_share_operators"
+                                    name="profit_share_operators" value="{{ $machine->profit_share_operators }}"
+                                    min="0" max="100" step="0.01" required>
+                                <div class="invalid-feedback" id="edit_operators_error"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Coordinates (latitude, longitude)</label>
+                                <input type="text" class="form-control" name="address" value="{{ $machine->latitude }}, {{ $machine->longitude }}" placeholder="11.583522, 104.880790" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-control" name="status" required>
+                                    <option value="Active" {{ $machine->status == 'Active' ? 'selected' : '' }}>Active</option>
+                                    <option value="Inactive" {{ $machine->status == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+                                    <option value="Maintenance" {{ $machine->status == 'Maintenance' ? 'selected' : '' }}>Maintenance</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Machine Image</label>
+                                <div class="mb-2">
+                                    @if(isset($machine->image) && !empty($machine->image))
+                                    <div class="position-relative mb-2">
+                                        <button type="button" class="btn btn-danger btn-sm position-absolute"
+                                            style="right: 0; top: 0; border-radius: 50%; padding: 0.25rem 0.5rem;"
+                                            onclick="toggleDeleteImage()">
+                                            <i class="mdi mdi-minus"></i>
+                                        </button>
+                                        <img src="{{ asset('storage/' . $machine->image) }}" alt="Current Machine Image"
+                                            class="img-thumbnail" style="max-height: 100px;">
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" name="delete_image" id="delete_image" value="1" style="display: none;">
+                                            <label class="form-check-label text-danger" id="delete_image_label" style="display: none;">
+                                                Image will be deleted
+                                            </label>
+                                        </div>
+                                    </div>
+                                    @else
+                                    <p class="text-muted">No image currently set</p>
+                                    @endif
+                                </div>
+                                <input type="file" class="form-control" name="image" accept="image/*">
+                                <small class="form-text text-muted">Upload a new image to replace the existing one</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="editSubmitBtn">Update Machine</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
 
 <!-- Assign Profit Modal -->
 @if(Auth::user() && Auth::user()->user_type == 5)
@@ -166,7 +303,7 @@
                                     <th>Note</th>
                                     <th>Current %</th>
                                     <th>New %</th>
-                                    
+
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -183,7 +320,7 @@
                                     <td>
                                         <input type="number" class="form-control profit-input" name="percentages[{{ $user->user_id }}]" value="{{ $user->percentage }}" min="0" max="100" step="0.01" required>
                                     </td>
-                                    
+
                                     <td>
                                         <button type="button" class="btn btn-danger btn-sm remove-user" data-user-id="{{ $user->user_id }}">
                                             <i class="mdi mdi-delete"></i> Delete
@@ -227,15 +364,15 @@
                     data.users.forEach(user => {
                         let userItem = document.createElement('div');
                         userItem.classList.add('p-2', 'border-bottom');
-                        
+
                         // Map user_type to role name
-                        let roleName = 
-                            user.user_type === 1 ? 'Investor' : 
+                        let roleName =
+                            user.user_type === 1 ? 'Investor' :
                             user.user_type === 2 ? 'Space Owner' :
                             user.user_type === 3 ? 'Money Collector' :
                             user.user_type === 4 ? 'Maintenance' :
                             user.user_type === 5 ? 'Admin' : 'Unknown';
-                        
+
                         userItem.innerHTML = `<strong>${user.full_name}</strong> (${user.phone_number}) - <span class="badge bg-info">${roleName}</span>`;
                         userItem.style.cursor = 'pointer';
                         userItem.onclick = function() {
@@ -252,13 +389,13 @@
 
     function addUserToTable(userId, fullName, role) {
         let userTable = document.getElementById('userTable');
-        
+
         // Remove "No users found" row if it exists
         let noUserRow = userTable.querySelector('tr td[colspan="7"]');
         if (noUserRow) {
             noUserRow.closest('tr').remove();
         }
-        
+
         // Check if user already exists
         let existingRow = document.getElementById(`userRow_${userId}`);
         if (existingRow) {
@@ -267,13 +404,13 @@
         }
 
         // Map role ID to role name
-        const roleName = 
-            role === 1 ? 'Investor' : 
-            role === 2 ? 'Space Owner' : 
-            role === 3 ? 'Money Collector' : 
-            role === 4 ? 'Maintenance' : 
+        const roleName =
+            role === 1 ? 'Investor' :
+            role === 2 ? 'Space Owner' :
+            role === 3 ? 'Money Collector' :
+            role === 4 ? 'Maintenance' :
             role === 5 ? 'Admin' : 'Unknown';
-        
+
         // Create new row with comment field
         let newRow = document.createElement('tr');
         newRow.id = `userRow_${userId}`;
@@ -302,10 +439,10 @@
 
         // Add the new row to the table
         userTable.appendChild(newRow);
-        
+
         // Add event listeners
         newRow.querySelector('.profit-input').addEventListener('input', updateTotalPercentage);
-        
+
         // Update remove button event listeners
         attachRemoveEventListeners();
         updateTotalPercentage();
@@ -327,17 +464,19 @@
         let machineId = document.querySelector('[name="machine_id"]').value;
 
         fetch(`/admin/delete_user_profit/${userId}/${machineId}`, {
-            method: 'DELETE',
-            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
-        }).then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById(`userRow_${userId}`).remove();
-                updateTotalPercentage();
-            } else {
-                alert(data.message);
-            }
-        });
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(`userRow_${userId}`).remove();
+                    updateTotalPercentage();
+                } else {
+                    alert(data.message);
+                }
+            });
     }
 
     attachRemoveEventListeners();
@@ -347,20 +486,20 @@
         let formData = new FormData(this);
 
         fetch("{{ route('admin.assignProfit') }}", {
-            method: 'POST',
-            body: formData
-        }).then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                location.reload();
-            } else {
-                alert(data.message);
-            }
-        }).catch(error => {
-            console.error("Error:", error);
-            alert("An error occurred while assigning profit.");
-        });
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            }).catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while assigning profit.");
+            });
     });
 
     document.querySelectorAll('.profit-input').forEach(input => {

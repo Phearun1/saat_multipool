@@ -2,22 +2,22 @@
 <div class="vertical-menu">
 
     <!-- LOGO -->
-    <div class="navbar-brand-box">
+     <div class="navbar-brand-box">
         <a href="/" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22">
+                <img src="{{ URL::asset('/assets/images/saatpool-logo.png') }}" alt="SAAT Pool" height="15" class="logo-img">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('/assets/images/logo-dark.png') }}" alt="" height="20">
+                <img src="{{ URL::asset('/assets/images/saatpool-logo.png') }}" alt="SAAT Pool" height="50" class="logo-img rounded ">
             </span>
         </a>
 
         <a href="/" class="logo logo-light">
             <span class="logo-sm">
-                <img src="{{ URL::asset('/assets/images/logo-sm.png') }}" alt="" height="22">
+                <img src="{{ URL::asset('/assets/images/saatpool-logo.png') }}" alt="SAAT Pool" height="15" class="logo-img">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('/assets/images/logo-light.png') }}" alt="" height="20">
+                <img src="{{ URL::asset('/assets/images/saatpool-logo.png') }}" alt="SAAT Pool" height="50" class="logo-img rounded">
             </span>
         </a>
     </div>
@@ -32,11 +32,19 @@
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
-                <li class="menu-title">{{ __('messages.menu') }}</li>
+                <!-- <li class="menu-title">{{ __('messages.menu') }}</li>
                 <li>
                     <a href="/">
                         <i class="uil-home-alt text-primary"></i>
                         <span>{{ __('messages.dashboard') }}</span>
+                    </a>
+                </li> -->
+
+                <li class="menu-title">{{ __('messages.pool') }}</li>
+                <li>
+                    <a href="/view_all_pool">
+                        <i class="fas fa-swimming-pool text-info"></i>
+                        <span>{{ __('messages.view_all_pool') }}</span>
                     </a>
                 </li>
 
@@ -47,6 +55,9 @@
                         <span>{{ __('messages.view_machine') }}</span>
                     </a>
                 </li>
+                
+
+                
 
                 @if(Auth::user()->user_type == 1) <!-- Investor -->
 
@@ -85,6 +96,9 @@
 
                 @if(Auth::user()->user_type == 5) <!-- Admin -->
 
+                
+                
+                
                 <li class="menu-title">{{ __('messages.users') }}</li>
                 <li>
                     <a href="/admin/view_all_users">
@@ -97,6 +111,8 @@
                         <span>{{ __('messages.view_all_account_referral_requests') }}</span>
                     </a>
                 </li>
+                
+                
 
                 <li class="menu-title">{{ __('messages.new_location') }}</li>
                 <li>
@@ -130,6 +146,8 @@
                     </a>
                 </li>
 
+                
+
                 @endif
             </ul>
 
@@ -149,3 +167,6 @@
     </div>
 </div>
 <!-- Left Sidebar End -->
+
+
+

@@ -10,7 +10,7 @@ use App\Http\Controllers\LocationRequestController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WebhookSenderController;
+use App\Http\Controllers\PoolController;
 use App\Http\Controllers\AbaPayController;
 
 /*
@@ -30,10 +30,13 @@ Auth::routes();
 // Routes for authenticated users
 Route::middleware(['auth'])->group(function () {
     // Shared route for all users
-    Route::get('/', [HomeController::class, 'root'])->name('index');
+    Route::get('/',  [PoolController::class, 'viewAllPool'])->name('admin.view_all_pool');
     Route::get('/view_all_machine', [MachineController::class, 'view_all_machine'])->name('machines.all');
     Route::get('/view_machine_detail/{machine_id}', [MachineController::class, 'view_machine_detail'])->name('machines.detail');
     Route::get('/view_profile', [ProfileController::class, 'view_profile'])->name('profile.view');
+
+    Route::get('/view_all_pool', [PoolController::class, 'viewAllPool'])->name('admin.view_all_pool');
+        Route::get('/view_pool_detail/{id}', [PoolController::class, 'viewPoolDetail'])->name('view_pool_detail');
 
     // Routes for Investors (user_type = 1)
     Route::middleware(['role:1'])->group(function () {
@@ -65,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/wallet/transaction/update-status', [WalletController::class, 'updateTransactionStatus'])->name('wallet.updateTransactionStatus');
         Route::get('/wallet/transaction-status/{transactionId}', [WalletController::class, 'checkTransactionStatus']);
 
+        Route::post('/invest_pool/{pool_id}', [PoolController::class, 'investPool'])->name('invest_pool');
     });
 
     // Routes for Admins (user_type = 5)
@@ -83,6 +87,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/view_operational_partner_account_detail/{id}', [AdminController::class, 'viewOperationalPartnerAccountDetail'])->name('admin.view_operational_partner_account_detail');
         Route::get('/admin/view_all_profit_distribution', [AdminController::class, 'viewProfitDistribution'])->name('admin.view_profit_distribution');
         Route::post('/machines/add', [MachineController::class, 'add_machine'])->name('machines.add');
+        Route::put('/machines/update/{machine_id}', [MachineController::class, 'updateMachine'])->name('machines.update');
         Route::post('/admin/assign_profit', [AdminController::class, 'assignProfit'])->name('admin.assignProfit');
         Route::post('/admin/add_user_profit', [AdminController::class, 'addUserProfit'])->name('admin.addUserProfit');
         Route::get('/admin/search-users', [AdminController::class, 'searchUsers'])->name('admin.searchUsers');
@@ -100,6 +105,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/view_all_account_referral_requests', [AdminController::class, 'viewAllAccountReferralRequests'])->name('admin.view_all_account_referral_requests');
         Route::get('/admin/approve_referral/{id}', [AdminController::class, 'approveReferral'])->name('admin.approve_referral');
         Route::get('/admin/reject_referral/{id}', [AdminController::class, 'rejectReferral'])->name('admin.reject_referral');
+
+        
+        Route::post('/create_pool', [PoolController::class, 'createPool'])->name('admin.create_pool');
+        Route::put('/update_pool/{id}', [PoolController::class, 'updatePool'])->name('admin.update_pool');
+        Route::delete('/delete_pool/{id}', [PoolController::class, 'deletePool'])->name('admin.delete_pool');
     });
 });
 

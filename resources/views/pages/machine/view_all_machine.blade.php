@@ -35,11 +35,13 @@
                         </div>
                     </div>
 
+                    @if(auth()->check() && auth()->user()->user_type === 5)
                     <div class="row">
                         <div class="col-md-6 mt-3 mb-3">
-                            <button class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addMachineModal"> {{ __('messages.add_machine') }}</button>
+                            <button class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#addMachineModal">{{ __('messages.add_machine') }}</button>
                         </div>
                     </div>
+                    @endif
 
                     <div class="row">
                         <div class="card">
@@ -49,6 +51,7 @@
                                         <thead class="table-light">
                                             <tr>
                                                 <th class="text-center">{{ __('messages.machine_id') }}</th>
+                                                <th class="text-center">{{ __('messages.pool_id') }}</th>
                                                 <th class="text-center">{{ __('messages.machine_location') }}</th>
                                                 <th class="text-center">{{ __('messages.coordinates') }}</th>
                                                 <th class="text-center">{{ __('messages.image') }}</th>
@@ -60,6 +63,7 @@
                                             @forelse($machines as $machine)
                                             <tr>
                                                 <td class="text-center"><a href="javascript:void(0);" class="text-body fw-bold">#{{ $machine->machine_id }}</a></td>
+                                                <td class="text-center">{{ $machine->pool_id }}</td>
                                                 <td class="text-center">{{ $machine->location }}</td>
                                                 <td class="text-center">{{ $machine->latitude }}, {{ $machine->longitude }}</td>
                                                 <td class="text-center">
@@ -107,7 +111,7 @@
 </div>
 
 
-<!-- filepath: /d:/saatcrowdfundingpoolinvestor/resources/views/pages/machine/view_all_machine.blade.php -->
+
 <div class="modal fade" id="addMachineModal" tabindex="-1" aria-labelledby="addMachineModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -121,27 +125,43 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
+                                <label for="pool_id" class="form-label">{{ __('messages.investment_pool') }}</label>
+                                <select class="form-select" id="pool_id" name="pool_id">
+                                    <option value="">Select Pool</option>
+                                    @foreach($pools as $pool)
+                                        <option value="{{ $pool->pool_id }}">#{{ $pool->pool_id }} - {{ $pool->pool_name }}</option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+
+                            
+                            <div class="mb-3">
                                 <label for="location" class="form-label">{{ __('messages.machine_location') }}</label>
                                 <input type="text" class="form-control" name="location" required>
                             </div>
+                            
                             <div class="mb-3">
                                 <label for="installation_date" class="form-label">{{ __('messages.installation_date') }}</label>
                                 <input type="date" class="form-control" name="installation_date" required>
                             </div>
+                            
                             <div class="mb-3">
                                 <label for="profit_share_investors" class="form-label">{{ __('messages.profit_share_for_investors') }} (%)</label>
                                 <input type="number" class="form-control" name="profit_share_investors" required>
                             </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="profit_share_operators" class="form-label">{{ __('messages.profit_share_for_operators') }} (%)</label>
                                 <input type="number" class="form-control" name="profit_share_operators" required>
                             </div>
-                        </div>
-                        <div class="col-md-6">
+                            
                             <div class="mb-3">
                                 <label for="address" class="form-label">{{ __('messages.coordinates') }} (latitude, longitude)</label>
                                 <input type="text" class="form-control" name="address" placeholder="11.583522860946546, 104.88079010741988" required>
                             </div>
+                            
                             <div class="mb-3">
                                 <label for="status" class="form-label">{{ __('messages.status') }}</label>
                                 <select class="form-control" name="status" required>
@@ -150,6 +170,7 @@
                                     <option value="Maintenance">{{ __('messages.maintenance') }}</option>
                                 </select>
                             </div>
+                            
                             <div class="mb-3">
                                 <label for="image" class="form-label">{{ __('messages.machine_image') }}</label>
                                 <input type="file" class="form-control" name="image">
@@ -158,6 +179,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
                     <button type="submit" class="btn btn-primary">{{ __('messages.add_machine') }}</button>
                 </div>
             </form>
